@@ -1,7 +1,7 @@
 import React from 'react';
 import { DAY_NAMES, MONTH_SHORT } from './data.js';
 
-const ADMIN_PASSWORD = 'admin';
+const ADMIN_PASSWORD = 'epitech42!';
 
 const ALL_DAYS = [1, 2, 3, 4, 5, 6, 0];
 const DAY_LABELS = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
