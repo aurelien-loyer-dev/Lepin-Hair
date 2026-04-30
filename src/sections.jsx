@@ -62,9 +62,6 @@ export function Services({ services, selected, onSelect }) {
             <div className="eyebrow">— Prestations</div>
             <h2>Quatre rituels.<br/>Choisissez le vôtre.</h2>
           </div>
-          <p className="desc">
-            Toutes les prestations comprennent shampoing et coiffage final. Les rituels signature durent 2 heures pour une expérience complète.
-          </p>
         </div>
         <div className="services">
           {services.map(s => (
