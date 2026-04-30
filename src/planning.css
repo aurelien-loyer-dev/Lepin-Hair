@@ -9,19 +9,21 @@
 }
 .planning-toolbar {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 24px 24px;
+  padding: 18px 24px;
   border-bottom: 1px solid var(--line);
-  gap: 16px;
-  flex-wrap: wrap;
-  min-height: 60px;
+  gap: 12px;
+  flex-wrap: nowrap;
+  overflow: hidden;
 }
 .planning-week-label {
   font-family: 'Fraunces', serif;
-  font-size: 22px;
+  font-size: 18px;
   letter-spacing: -0.01em;
+  flex-shrink: 0;
+  min-width: fit-content;
 }
 .planning-week-label .month { color: var(--fg-mute); margin-left: 8px; font-size: 14px; font-family: 'Inter', sans-serif; letter-spacing: 0.04em; text-transform: uppercase; }
-.planning-nav { display: flex; gap: 4px; align-items: center; }
+.planning-nav { display: flex; gap: 2px; align-items: center; flex: 1; min-width: 0; justify-content: flex-end; }
 .planning-nav button {
   width: 36px; height: 36px;
   background: transparent;
@@ -44,24 +46,25 @@
   display: flex; gap: 0;
   border: 1px solid var(--line);
   border-radius: 8px;
-  padding: 3px;
+  padding: 2px;
   background: var(--bg-elev-2);
-  min-width: 0;
-  flex-shrink: 1;
+  flex-shrink: 0;
 }
 .view-toggle button {
   background: transparent;
   border: 0;
   color: var(--fg-dim);
-  padding: 4px 6px;
+  padding: 3px 5px;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 11px;
+  font-size: 10px;
   letter-spacing: 0.04em;
   font-family: inherit;
   white-space: nowrap;
-  flex: 1;
   min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .view-toggle button.active {
   background: var(--bg);

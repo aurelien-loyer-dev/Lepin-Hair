@@ -326,7 +326,7 @@ function SettingsTab({ config, onSave }) {
         <div className="adm-setting-card">
           <div className="adm-section-lbl">Accès admin</div>
           <p style={{ fontSize: 13, color: 'var(--fg-dim)', margin: 0 }}>
-            Mot de passe actuel&nbsp;: <code style={{ fontFamily: 'JetBrains Mono, monospace', color: 'var(--fg)' }}>admin</code>
+            Mot de passe actuel&nbsp;: <code style={{ fontFamily: 'JetBrains Mono, monospace', color: 'var(--fg)' }}>epitech42!</code>
           </p>
           <p style={{ fontSize: 12, color: 'var(--fg-mute)', margin: 0 }}>
             Pour changer le mot de passe, modifiez la constante <code style={{ fontFamily: 'JetBrains Mono, monospace' }}>ADMIN_PASSWORD</code> dans <code style={{ fontFamily: 'JetBrains Mono, monospace' }}>src/admin.jsx</code>.
