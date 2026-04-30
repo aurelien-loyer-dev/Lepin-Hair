@@ -37,10 +37,9 @@ export function Hero({ onCta }) {
             <button className="btn-ghost" onClick={() => document.querySelector('#services-anchor')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>Voir les prestations</button>
           </div>
           <div className="hero-meta">
-            <div><div className="k">Adresse</div><div className="v">12 rue des Tanneurs</div></div>
+            <div><div className="k">Adresse</div><div className="v">EPITECH La Réunion</div></div>
             <div><div className="k">Horaires</div><div className="v">Lun–Ven · 14h–18h</div></div>
-            <div><div className="k">Téléphone</div><div className="v">04 78 12 34 56</div></div>
-          </div>
+            </div>
         </div>
         <div className="hero-card">
           <div className="placeholder-img">[ photo salon — intérieur ]</div>
@@ -157,7 +156,7 @@ export function Footer() {
   return (
     <div className="shell">
       <div className="foot">
-        <div>© 2026 Lepin'Hair · 12 rue des Tanneurs, Lyon 6e</div>
+        <div>© 2026 Lepin'Hair · EPITECH La Réunion, Lyon 6e</div>
         <div style={{ display: 'flex', gap: 24 }}>
           <a>Mentions légales</a>
           <a>Contact</a>
