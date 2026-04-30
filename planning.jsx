@@ -208,7 +208,7 @@ function DayView({ weekDays, activeDay, setActiveDay, today, canBook, isSlotBook
             : booked ? 'Réservé'
             : past ? 'Passé'
             : !ok ? 'Indisponible'
-            : `${duration}h disponible`;
+            : `disponible`;
           return (
             <button
               key={h}
