@@ -45,7 +45,7 @@ export function Hero({ onCta }) {
           <div className="placeholder-img">[ photo salon — intérieur ]</div>
           <div className="hero-card-foot">
             <span>Atelier de coiffure pour homme</span>
-            <b>Lyon · 6e</b>
+            <b>Saint-André</b>
           </div>
         </div>
       </div>
@@ -156,7 +156,7 @@ export function Footer() {
   return (
     <div className="shell">
       <div className="foot">
-        <div>© 2026 Lepin'Hair · EPITECH La Réunion, Lyon 6e</div>
+        <div>© 2026 Lepin'Hair · EPITECH La Réunion, Saint-André</div>
         <div style={{ display: 'flex', gap: 24 }}>
           <a>Mentions légales</a>
           <a>Contact</a>
