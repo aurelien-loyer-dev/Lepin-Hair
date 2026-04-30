@@ -80,11 +80,3 @@ export function hoursForDay() {
   for (let h = HOURS.start; h < HOURS.end; h++) slots.push(h);
   return slots;
 }
-
-export function isPreBooked(date, hour) {
-  const key = dateKey(date);
-  let h = 0;
-  const s = key + ':' + hour;
-  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
-  return Math.abs(h) % 7 < 2;
-}

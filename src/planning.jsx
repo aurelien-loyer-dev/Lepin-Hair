@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   WORKING_DAYS, HOURS, DAY_NAMES, DAY_NAMES_LONG, MONTH_NAMES, MONTH_SHORT,
-  startOfWeek, addDays, sameDay, isPast, dateKey, hoursForDay, isPreBooked,
+  startOfWeek, addDays, sameDay, isPast, dateKey, hoursForDay,
 } from './data.js';
 
 export function Planning({ services, selected, onPick, viewMode, setViewMode, bookedAppts }) {
@@ -26,8 +26,7 @@ export function Planning({ services, selected, onPick, viewMode, setViewMode, bo
   );
 
   function isSlotBooked(date, hour) {
-    if (userBookedSet.has(`${dateKey(date)}:${hour}`)) return true;
-    return isPreBooked(date, hour);
+    return userBookedSet.has(`${dateKey(date)}:${hour}`);
   }
 
   function canBook(date, hour) {
