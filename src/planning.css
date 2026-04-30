@@ -46,19 +46,22 @@
   border-radius: 8px;
   padding: 3px;
   background: var(--bg-elev-2);
+  min-width: 0;
+  flex-shrink: 1;
 }
 .view-toggle button {
   background: transparent;
   border: 0;
   color: var(--fg-dim);
-  padding: 6px 11px;
+  padding: 4px 6px;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: 0.04em;
   font-family: inherit;
   white-space: nowrap;
   flex: 1;
+  min-width: 0;
 }
 .view-toggle button.active {
   background: var(--bg);
