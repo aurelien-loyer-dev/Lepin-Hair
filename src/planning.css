@@ -51,12 +51,13 @@
   background: transparent;
   border: 0;
   color: var(--fg-dim);
-  padding: 6px 14px;
+  padding: 8px 20px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 12px;
   letter-spacing: 0.04em;
   font-family: inherit;
+  white-space: nowrap;
 }
 .view-toggle button.active {
   background: var(--bg);
