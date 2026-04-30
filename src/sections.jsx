@@ -7,7 +7,7 @@ export function Nav({ section, onNav, hasAppts }) {
       <div className="shell nav-inner">
         <div className="brand">
           <span>Lepin<span className="dot">'</span>Hair</span>
-          <span className="tag">Barber · depuis 2018</span>
+          <span className="tag">Barber · depuis 2026</span>
         </div>
         <div className="nav-links">
           <a className={section === 'home' ? 'active' : ''} onClick={() => onNav('home')}>Accueil</a>
