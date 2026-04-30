@@ -66,10 +66,8 @@
 /* Week view */
 .week-grid {
   display: grid;
-  grid-template-columns: 64px repeat(5, 1fr);
+  grid-template-columns: 64px repeat(5, minmax(0, 1fr));
   width: 100%;
-  min-width: 0;
-  overflow-x: auto;
 }
 .week-head {
   display: contents;
@@ -507,6 +505,7 @@
 @media (max-width: 880px) {
   .hero-grid { grid-template-columns: 1fr; gap: 40px; }
   .services { grid-template-columns: 1fr; }
-  .week-grid { grid-template-columns: 48px repeat(5, 1fr); font-size: 11px; }
+  .week-grid { grid-template-columns: 48px repeat(5, minmax(0, 1fr)); font-size: 11px; }
   .section-head { flex-direction: column; align-items: start; }
+  .planning-nav { flex-wrap: wrap; justify-content: flex-end; }
 }
