@@ -1,9 +1,10 @@
 import React from 'react';
-import { SERVICES, dateKey, fmtDateShort } from './data.js';
+import { SERVICES, HOURS, WORKING_DAYS, dateKey, fmtDateShort } from './data.js';
 import { useTweaks, TweaksPanel, TweakSection, TweakRadio } from './tweaks-panel.jsx';
 import { Nav, Hero, Services, MyAppts, Footer } from './sections.jsx';
 import { BookingModal, CancelModal } from './booking.jsx';
 import { Planning } from './planning.jsx';
+import { AdminSection } from './admin.jsx';
 
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "viewMode": "week",
@@ -17,6 +18,29 @@ export function App() {
   const [selected, setSelected] = React.useState({ service: null, date: null, hour: null });
   const [modal, setModal] = React.useState(null);
   const [cancelTarget, setCancelTarget] = React.useState(null);
+  const [services, setServices] = React.useState(() => {
+    try { return JSON.parse(localStorage.getItem('lepin_services') || JSON.stringify(SERVICES)); }
+    catch { return SERVICES; }
+  });
+  const [config, setConfig] = React.useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('lepin_config') || JSON.stringify({
+        hours: HOURS,
+        workingDays: WORKING_DAYS,
+        address: 'EPITECH La Réunion',
+        city: 'Saint-André',
+        phone: '',
+      }));
+    } catch {
+      return {
+        hours: HOURS,
+        workingDays: WORKING_DAYS,
+        address: 'EPITECH La Réunion',
+        city: 'Saint-André',
+        phone: '',
+      };
+    }
+  });
   const [appts, setAppts] = React.useState(() => {
     try { return JSON.parse(localStorage.getItem('lepin_appts') || '[]'); }
     catch { return []; }
@@ -26,6 +50,14 @@ export function App() {
   React.useEffect(() => {
     try { localStorage.setItem('lepin_appts', JSON.stringify(appts)); } catch {}
   }, [appts]);
+
+  React.useEffect(() => {
+    try { localStorage.setItem('lepin_services', JSON.stringify(services)); } catch {}
+  }, [services]);
+
+  React.useEffect(() => {
+    try { localStorage.setItem('lepin_config', JSON.stringify(config)); } catch {}
+  }, [config]);
 
   React.useEffect(() => {
     document.documentElement.dataset.theme = t.theme;
@@ -99,6 +131,16 @@ export function App() {
     showToast('Rendez-vous annulé');
   }
 
+  function saveServices(newServices) {
+    setServices(newServices);
+    showToast('Prestations mises à jour');
+  }
+
+  function saveConfig(newConfig) {
+    setConfig(newConfig);
+    showToast('Configuration mise à jour');
+  }
+
   const canConfirm = selected.service && selected.date && selected.hour != null;
   const activeAppts = appts.filter(a => a.status === 'active');
 
@@ -108,8 +150,8 @@ export function App() {
 
       {section === 'home' && (
         <>
-          <Hero onCta={() => navTo('book')} />
-          <Services services={SERVICES} selected={selected} onSelect={pickService} />
+          <Hero onCta={() => navTo('book')} config={config} />
+          <Services services={services} selected={selected} onSelect={pickService} />
           <BookSection
             selected={selected}
             onPick={pickSlot}
@@ -119,17 +161,19 @@ export function App() {
             canConfirm={canConfirm}
             openReview={openReview}
             onClear={() => setSelected({ service: null, date: null, hour: null })}
+            hours={config.hours}
+            workingDays={config.workingDays}
           />
         </>
       )}
 
       {section === 'services' && (
-        <Services services={SERVICES} selected={selected} onSelect={pickService} />
+        <Services services={services} selected={selected} onSelect={pickService} />
       )}
 
       {section === 'book' && (
         <>
-          <Services services={SERVICES} selected={selected} onSelect={pickService} />
+          <Services services={services} selected={selected} onSelect={pickService} />
           <BookSection
             selected={selected}
             onPick={pickSlot}
@@ -139,12 +183,28 @@ export function App() {
             canConfirm={canConfirm}
             openReview={openReview}
             onClear={() => setSelected({ service: null, date: null, hour: null })}
+            hours={config.hours}
+            workingDays={config.workingDays}
           />
         </>
       )}
 
       {section === 'mine' && (
         <MyAppts appts={appts} onCancel={(a) => setCancelTarget(a)} onBookNew={() => navTo('book')} />
+      )}
+
+      {section === 'admin' && (
+        <AdminSection
+          services={services}
+          onSaveServices={saveServices}
+          appts={appts}
+          onCancelAppt={(id) => {
+            setAppts(prev => prev.map(a => a.id === id ? { ...a, status: 'cancelled' } : a));
+            showToast('Rendez-vous annulé');
+          }}
+          config={config}
+          onSaveConfig={saveConfig}
+        />
       )}
 
       <Footer />
@@ -196,8 +256,9 @@ export function App() {
   );
 }
 
-export function BookSection({ selected, onPick, viewMode, setViewMode, bookedAppts, canConfirm, openReview, onClear }) {
+export function BookSection({ selected, onPick, viewMode, setViewMode, bookedAppts, canConfirm, openReview, onClear, hours, workingDays }) {
   const endHour = selected.hour != null && selected.service ? selected.hour + selected.service.duration : null;
+  const hoursLabel = hours ? `${hours.start}h à ${hours.end}h` : '14h à 18h';
   return (
     <section className="section" id="book-anchor">
       <div className="shell">
@@ -207,16 +268,17 @@ export function BookSection({ selected, onPick, viewMode, setViewMode, bookedApp
             <h2>Choisissez votre créneau.</h2>
           </div>
           <p className="desc">
-            Lundi au vendredi, 14h à 18h. Les créneaux s'adaptent automatiquement à la durée de votre prestation.
+            Lundi au vendredi, {hoursLabel}. Les créneaux s'adaptent automatiquement à la durée de votre prestation.
           </p>
         </div>
         <Planning
-          services={SERVICES}
           selected={selected}
           onPick={onPick}
           viewMode={viewMode}
           setViewMode={setViewMode}
           bookedAppts={bookedAppts}
+          hours={hours}
+          workingDays={workingDays}
         />
         <div className="booking-bar">
           <div className="booking-summary">

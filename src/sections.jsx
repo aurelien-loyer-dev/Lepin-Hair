@@ -7,14 +7,17 @@ export function Nav({ section, onNav, hasAppts }) {
       <div className="shell nav-inner">
         <div className="brand">
           <span>Lepin<span className="dot">'</span>Hair</span>
-          <span className="tag">Barber · depuis 2026</span>
+          <span className="tag">Barber · depuis 2018</span>
         </div>
         <div className="nav-links">
-          <a className={section === 'home' ? 'active' : ''} onClick={() => onNav('home')}>Accueil</a>
+          <a className={section === 'home'     ? 'active' : ''} onClick={() => onNav('home')}>Accueil</a>
           <a className={section === 'services' ? 'active' : ''} onClick={() => onNav('services')}>Prestations</a>
-          <a className={section === 'book' ? 'active' : ''} onClick={() => onNav('book')}>Réserver</a>
-          <a className={section === 'mine' ? 'active' : ''} onClick={() => onNav('mine')}>
-            Mes RDV{hasAppts ? ` ·` : ''}
+          <a className={section === 'book'     ? 'active' : ''} onClick={() => onNav('book')}>Réserver</a>
+          <a className={section === 'mine'     ? 'active' : ''} onClick={() => onNav('mine')}>
+            Mes RDV{hasAppts ? ' ·' : ''}
+          </a>
+          <a className={`adm-nav-link ${section === 'admin' ? 'active' : ''}`} onClick={() => onNav('admin')}>
+            Admin
           </a>
         </div>
         <button className="nav-cta" onClick={() => onNav('book')}>Prendre RDV</button>
@@ -23,29 +26,36 @@ export function Nav({ section, onNav, hasAppts }) {
   );
 }
 
-export function Hero({ onCta }) {
+export function Hero({ onCta, config }) {
+  const addr  = config?.address || 'EPITECH La Réunion';
+  const city  = config?.city    || 'Saint-André';
+  const phone = config?.phone   || '';
+  const h     = config?.hours   || { start: 14, end: 18 };
+  const hoursLabel = `${h.start}h–${h.end}h`;
+
   return (
     <section className="hero">
       <div className="shell hero-grid">
         <div>
           <h1>L'art de la coupe.<br/><em>Sans compromis.</em></h1>
           <p className="lead">
-            Un salon. Un coiffeur. Quatre prestations sur-mesure, du lundi au vendredi de 14h à 18h. Réservez votre créneau en ligne, en deux clics.
+            Un salon. Un coiffeur. Quatre prestations sur-mesure, du lundi au vendredi de {hoursLabel}. Réservez votre créneau en ligne, en deux clics.
           </p>
           <div style={{ display: 'flex', gap: 12 }}>
             <button className="btn-primary" onClick={onCta}>Réserver maintenant</button>
             <button className="btn-ghost" onClick={() => document.querySelector('#services-anchor')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>Voir les prestations</button>
           </div>
           <div className="hero-meta">
-            <div><div className="k">Adresse</div><div className="v">EPITECH La Réunion</div></div>
-            <div><div className="k">Horaires</div><div className="v">Lun–Ven · 14h–18h</div></div>
-            </div>
+            <div><div className="k">Adresse</div><div className="v">{addr}</div></div>
+            <div><div className="k">Horaires</div><div className="v">Lun–Ven · {hoursLabel}</div></div>
+            {phone && <div><div className="k">Téléphone</div><div className="v">{phone}</div></div>}
+          </div>
         </div>
         <div className="hero-card">
           <div className="placeholder-img">[ photo salon — intérieur ]</div>
           <div className="hero-card-foot">
             <span>Atelier de coiffure pour homme</span>
-            <b>Saint-André</b>
+            <b>{city}</b>
           </div>
         </div>
       </div>
@@ -62,6 +72,9 @@ export function Services({ services, selected, onSelect }) {
             <div className="eyebrow">— Prestations</div>
             <h2>Quatre rituels.<br/>Choisissez le vôtre.</h2>
           </div>
+          <p className="desc">
+            Toutes les prestations comprennent shampoing et coiffage final. Les rituels signature durent 2 heures pour une expérience complète.
+          </p>
         </div>
         <div className="services">
           {services.map(s => (
@@ -149,11 +162,13 @@ export function MyAppts({ appts, onCancel, onBookNew }) {
   );
 }
 
-export function Footer() {
+export function Footer({ config }) {
+  const addr = config?.address || 'EPITECH La Réunion';
+  const city = config?.city    || 'Saint-André';
   return (
     <div className="shell">
       <div className="foot">
-        <div>© 2026 Lepin'Hair · EPITECH La Réunion, Saint-André</div>
+        <div>© 2026 Lepin'Hair · {addr}, {city}</div>
         <div style={{ display: 'flex', gap: 24 }}>
           <a>Mentions légales</a>
           <a>Contact</a>

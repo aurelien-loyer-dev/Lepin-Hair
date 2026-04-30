@@ -1,20 +1,20 @@
 import React from 'react';
 import {
-  WORKING_DAYS, HOURS, DAY_NAMES, DAY_NAMES_LONG, MONTH_NAMES, MONTH_SHORT,
+  DAY_NAMES, DAY_NAMES_LONG, MONTH_NAMES, MONTH_SHORT,
   startOfWeek, addDays, sameDay, isPast, dateKey, hoursForDay,
 } from './data.js';
 
-export function Planning({ services, selected, onPick, viewMode, setViewMode, bookedAppts }) {
+export function Planning({ selected, onPick, viewMode, setViewMode, bookedAppts, hours, workingDays }) {
   const [weekStart, setWeekStart] = React.useState(() => startOfWeek(new Date()));
   const [activeDay, setActiveDay] = React.useState(() => {
-    const t = new Date(); t.setHours(0,0,0,0);
-    if (WORKING_DAYS.includes(t.getDay())) return t;
+    const t = new Date(); t.setHours(0, 0, 0, 0);
+    if (workingDays.includes(t.getDay())) return t;
     return startOfWeek(t);
   });
 
-  const today = new Date(); today.setHours(0,0,0,0);
-  const weekDays = WORKING_DAYS.map(dow => addDays(weekStart, dow - 1));
-
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const weekDays = workingDays.map(dow => addDays(weekStart, dow - 1));
+  const hourSlots = hoursForDay(hours);
   const duration = selected.service?.duration || 1;
 
   const userBookedSet = new Set(
@@ -33,7 +33,7 @@ export function Planning({ services, selected, onPick, viewMode, setViewMode, bo
     if (isPast(date, hour)) return false;
     if (isSlotBooked(date, hour)) return false;
     if (duration === 2) {
-      if (hour + 1 >= HOURS.end) return false;
+      if (hour + 1 >= hours.end) return false;
       if (isSlotBooked(date, hour + 1)) return false;
     }
     return true;
@@ -60,68 +60,51 @@ export function Planning({ services, selected, onPick, viewMode, setViewMode, bo
   const goNext = () => setWeekStart(d => addDays(d, 7));
   const goToday = () => {
     setWeekStart(startOfWeek(new Date()));
-    const t = new Date(); t.setHours(0,0,0,0);
-    if (WORKING_DAYS.includes(t.getDay())) setActiveDay(t);
+    const t = new Date(); t.setHours(0, 0, 0, 0);
+    if (workingDays.includes(t.getDay())) setActiveDay(t);
     else setActiveDay(startOfWeek(t));
   };
 
   const isCurrentWeek = sameDay(weekStart, startOfWeek(today));
-  const monthLabel = (() => {
-    const last = weekDays[weekDays.length - 1];
-    if (weekDays[0].getMonth() === last.getMonth()) return MONTH_NAMES[weekDays[0].getMonth()];
-    return `${MONTH_SHORT[weekDays[0].getMonth()]} – ${MONTH_SHORT[last.getMonth()]}`;
-  })();
 
   return (
     <div className="planning-wrap">
       <div className="planning-toolbar">
-        <div>
-          <div className="planning-week-label">
-            Semaine du {weekDays[0].getDate()} {MONTH_SHORT[weekDays[0].getMonth()]}
-            <span className="month">{weekDays[0].getFullYear()}</span>
-          </div>
+        <div className="planning-week-label">
+          Semaine du {weekDays[0].getDate()} {MONTH_SHORT[weekDays[0].getMonth()]}
+          <span className="month">{weekDays[0].getFullYear()}</span>
         </div>
         <div className="planning-nav">
           <button className="today" onClick={goToday} disabled={isCurrentWeek}>Aujourd'hui</button>
           <button onClick={goPrev} aria-label="Semaine précédente">‹</button>
           <button onClick={goNext} aria-label="Semaine suivante">›</button>
-          <div style={{ width: 12 }}></div>
+          <div style={{ width: 12 }} />
           <div className="view-toggle">
             <button className={viewMode === 'week' ? 'active' : ''} onClick={() => setViewMode('week')}>Semaine</button>
-            <button className={viewMode === 'day' ? 'active' : ''} onClick={() => setViewMode('day')}>Jour</button>
+            <button className={viewMode === 'day'  ? 'active' : ''} onClick={() => setViewMode('day')}>Jour</button>
           </div>
         </div>
       </div>
 
       {viewMode === 'week' ? (
         <WeekView
-          weekDays={weekDays}
-          today={today}
-          canBook={canBook}
-          isSlotBooked={isSlotBooked}
-          isSelectedSlot={isSelectedSlot}
-          handlePick={handlePick}
-          duration={duration}
+          weekDays={weekDays} today={today} hourSlots={hourSlots}
+          canBook={canBook} isSlotBooked={isSlotBooked}
+          isSelectedSlot={isSelectedSlot} handlePick={handlePick} duration={duration}
         />
       ) : (
         <DayView
-          weekDays={weekDays}
-          activeDay={activeDay}
-          setActiveDay={setActiveDay}
-          today={today}
-          canBook={canBook}
-          isSlotBooked={isSlotBooked}
-          isSelectedSlot={isSelectedSlot}
-          handlePick={handlePick}
-          duration={duration}
+          weekDays={weekDays} activeDay={activeDay} setActiveDay={setActiveDay}
+          today={today} hourSlots={hourSlots}
+          canBook={canBook} isSlotBooked={isSlotBooked}
+          isSelectedSlot={isSelectedSlot} handlePick={handlePick} duration={duration}
         />
       )}
     </div>
   );
 }
 
-export function WeekView({ weekDays, today, canBook, isSlotBooked, isSelectedSlot, handlePick, duration }) {
-  const hours = hoursForDay();
+export function WeekView({ weekDays, today, hourSlots, canBook, isSlotBooked, isSelectedSlot, handlePick, duration }) {
   return (
     <div className="week-grid">
       <div className="week-head">
@@ -134,23 +117,21 @@ export function WeekView({ weekDays, today, canBook, isSlotBooked, isSelectedSlo
         ))}
       </div>
       <div className="time-col">
-        {hours.map(h => (
-          <div key={h} className="time-slot">{String(h).padStart(2,'0')}:00</div>
+        {hourSlots.map(h => (
+          <div key={h} className="time-slot">{String(h).padStart(2, '0')}:00</div>
         ))}
       </div>
       {weekDays.map((d, di) => (
         <div key={di} className="day-col">
-          {hours.map(h => {
-            const past = isPast(d, h);
+          {hourSlots.map(h => {
+            const past   = isPast(d, h);
             const booked = isSlotBooked(d, h);
-            const ok = canBook(d, h);
-            const sel = isSelectedSlot(d, h);
-            const cls = sel ? 'selected' : booked ? 'booked' : (past || !ok) ? 'unavailable' : '';
-            const label = sel
+            const ok     = canBook(d, h);
+            const sel    = isSelectedSlot(d, h);
+            const cls    = sel ? 'selected' : booked ? 'booked' : (past || !ok) ? 'unavailable' : '';
+            const label  = sel
               ? (duration === 2 ? `${String(h).padStart(2,'0')}–${String(h+2).padStart(2,'0')}h` : '✓')
-              : booked ? '—'
-              : past ? '—'
-              : `${String(h).padStart(2,'0')}:00`;
+              : booked ? '—' : past ? '—' : `${String(h).padStart(2,'0')}:00`;
             return (
               <div key={h} className={`slot ${cls}`}>
                 <button onClick={() => handlePick(d, h)} disabled={booked || past}>
@@ -165,14 +146,13 @@ export function WeekView({ weekDays, today, canBook, isSlotBooked, isSelectedSlo
   );
 }
 
-export function DayView({ weekDays, activeDay, setActiveDay, today, canBook, isSlotBooked, isSelectedSlot, handlePick, duration }) {
-  const hours = hoursForDay();
+export function DayView({ weekDays, activeDay, setActiveDay, today, hourSlots, canBook, isSlotBooked, isSelectedSlot, handlePick, duration }) {
   const day = activeDay;
   return (
     <div className="day-view">
       <div className="day-tabs">
         {weekDays.map((d, i) => {
-          const active = sameDay(d, day);
+          const active  = sameDay(d, day);
           const isToday = sameDay(d, today);
           return (
             <button
@@ -189,23 +169,24 @@ export function DayView({ weekDays, activeDay, setActiveDay, today, canBook, isS
       <div className="day-view-head">
         <h3>
           <span className="num">{day.getDate()}</span>
-          {DAY_NAMES_LONG[day.getDay()]} <span style={{ color: 'var(--fg-mute)', fontSize: '20px' }}>· {MONTH_NAMES[day.getMonth()]}</span>
+          {DAY_NAMES_LONG[day.getDay()]}
+          <span style={{ color: 'var(--fg-mute)', fontSize: '20px' }}> · {MONTH_NAMES[day.getMonth()]}</span>
         </h3>
       </div>
       <div className="day-view-list">
-        {hours.map(h => {
-          const past = isPast(day, h);
+        {hourSlots.map(h => {
+          const past   = isPast(day, h);
           const booked = isSlotBooked(day, h);
-          const ok = canBook(day, h);
-          const sel = isSelectedSlot(day, h);
+          const ok     = canBook(day, h);
+          const sel    = isSelectedSlot(day, h);
           let cls = '';
           if (sel) cls = 'selected';
           else if (booked) cls = 'booked';
           else if (past || !ok) cls = 'unavailable';
-          const sub = sel ? `${duration}h · sélectionné`
-            : booked ? 'Réservé'
-            : past ? 'Passé'
-            : !ok ? 'Indisponible'
+          const sub = sel    ? `${duration}h · sélectionné`
+            : booked         ? 'Réservé'
+            : past           ? 'Passé'
+            : !ok            ? 'Indisponible'
             : `${duration}h disponible`;
           return (
             <button
@@ -214,7 +195,7 @@ export function DayView({ weekDays, activeDay, setActiveDay, today, canBook, isS
               onClick={() => handlePick(day, h)}
               disabled={booked || past || !ok}
             >
-              <span className="time">{String(h).padStart(2,'0')}:00</span>
+              <span className="time">{String(h).padStart(2, '0')}:00</span>
               <span className="sub">{sub}</span>
             </button>
           );

@@ -75,8 +75,9 @@ export function dateKey(d) {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 
-export function hoursForDay() {
+export function hoursForDay(customHours) {
+  const range = customHours || HOURS;
   const slots = [];
-  for (let h = HOURS.start; h < HOURS.end; h++) slots.push(h);
+  for (let h = range.start; h < range.end; h++) slots.push(h);
   return slots;
 }
