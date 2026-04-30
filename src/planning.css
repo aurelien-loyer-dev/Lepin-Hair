@@ -46,18 +46,19 @@
   display: flex; gap: 0;
   border: 1px solid var(--line);
   border-radius: 8px;
-  padding: 2px;
+  padding: 4px;
   background: var(--bg-elev-2);
   flex-shrink: 0;
+  min-width: 160px;
 }
 .view-toggle button {
   background: transparent;
   border: 0;
   color: var(--fg-dim);
-  padding: 3px 5px;
+  padding: 5px 8px;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.04em;
   font-family: inherit;
   white-space: nowrap;

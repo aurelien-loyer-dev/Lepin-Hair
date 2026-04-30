@@ -85,7 +85,6 @@ function Planning({ services, selected, onPick, viewMode, setViewMode, bookedApp
           <button className="today" onClick={goToday} disabled={isCurrentWeek}>Aujourd'hui</button>
           <button onClick={goPrev} aria-label="Semaine précédente">‹</button>
           <button onClick={goNext} aria-label="Semaine suivante">›</button>
-          <div style={{ width: 12 }}></div>
           <div className="view-toggle">
             <button className={viewMode === 'week' ? 'active' : ''} onClick={() => setViewMode('week')}>Semaine</button>
             <button className={viewMode === 'day' ? 'active' : ''} onClick={() => setViewMode('day')}>Jour</button>
